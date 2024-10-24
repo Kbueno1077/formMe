@@ -2,6 +2,7 @@ import type { Attribute } from './types';
 
 const allowedInputTypes = ['input', 'textarea', 'select', 'radio', 'checkbox', 'website', 'list'];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isInstanceOfType<T>(obj: any, type: Partial<Record<keyof T, string>>): obj is T {
 	return (
 		obj &&
@@ -20,8 +21,6 @@ export const validateImportedJson = (jsonData: unknown) => {
 
 	jsonData.forEach((inputData) => {
 		if (!allowedInputTypes.includes(inputData.component)) {
-			console.log('COMP');
-
 			return false;
 		}
 
@@ -30,8 +29,6 @@ export const validateImportedJson = (jsonData: unknown) => {
 		}
 
 		if (typeof inputData.index !== 'number') {
-			console.log('INDEX');
-
 			return false;
 		}
 
@@ -39,7 +36,6 @@ export const validateImportedJson = (jsonData: unknown) => {
 			inputData.attributes &&
 			!isInstanceOfType<Attribute>(inputData.attributes, typeDescriptor)
 		) {
-			console.log('ATTR');
 			return false;
 		}
 	});

@@ -3,6 +3,7 @@ import { addDoc, collection } from 'firebase/firestore';
 import randomstring from 'randomstring';
 import { derived, get, writable, type Writable } from 'svelte/store';
 import type { Attribute, Field, SavedUrl } from '../utils/types';
+import { createGetValue } from '../utils/getAutoValue';
 
 export const createdUrlsInSession: Writable<SavedUrl[]> = writable([]);
 export const inputsStore: Writable<Field[]> = writable([]);
@@ -50,45 +51,7 @@ export function addInput(component: string, attributes: object) {
 			component,
 			attributes,
 			index: inputs.length,
-			getValue: function () {
-				if (this.component === 'checkbox') {
-					return (
-						this.attributes.options
-							?.map((option) =>
-								(document.getElementById(`cb_${this.id}_${option}`) as HTMLInputElement)?.checked
-									? option
-									: ''
-							)
-							.join(', ') || ''
-					);
-				}
-
-				if (this.component === 'radio') {
-					return (
-						this.attributes.options
-							?.map((option) =>
-								(document.getElementById(`rb_${this.id}_${option}`) as HTMLInputElement)?.checked
-									? option
-									: ''
-							)
-							.join(', ') || ''
-					);
-				}
-
-				if (this.component === 'website') {
-					const prefix = this.attributes?.prefix || '';
-					const value = (document.getElementById(this.id) as HTMLInputElement)?.value || '';
-
-					return `${prefix}${value}`;
-				}
-
-				if (this.component === 'list') {
-					const list = this.attributes.options?.join(', ') || '';
-					return list;
-				}
-
-				return (document.getElementById(this.id) as HTMLInputElement)?.value || '';
-			}
+			getValue: createGetValue({ id, component, attributes, index: inputs.length } as Field)
 		}
 	]);
 }
@@ -128,6 +91,7 @@ export function updateInputAttributes(id: string, newAttributes: object) {
 
 export function checkValues() {
 	const inputs = get(inputsStore);
+
 	inputs.forEach((input: Field) => {
 		console.log(input.getValue());
 	});
@@ -190,11 +154,16 @@ export function exportDataJSON() {
 }
 
 export function importDataJson(newInputs: Field[]) {
-	inputsStore.set(newInputs);
+	const addGetValueFunction = newInputs.map((input) => ({
+		...input,
+		getValue: createGetValue(input)
+	}));
+
+	inputsStore.set(addGetValueFunction);
 }
 
 export function handleUpdateAttributes(target: string, attributesData: Attribute, e: Event) {
-	const attributes = structuredClone(attributesData);
+	const attributes = JSON.parse(JSON.stringify(attributesData));
 
 	const eventTarget = e.target as HTMLInputElement;
 	const name = eventTarget.name;

@@ -53,7 +53,7 @@
 </script>
 
 <div>
-	<FileDropzone name="files" on:change={onChangeHandler}>
+	<FileDropzone name="files" onchange={onChangeHandler}>
 		{#snippet lead()}
 			<div class="flex justify-center">
 				{#if !isLoading}

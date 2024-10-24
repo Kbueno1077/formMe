@@ -36,7 +36,7 @@
 </script>
 
 <div class="search-form">
-	<form on:submit={handleSearch}>
+	<form onsubmit={handleSearch}>
 		<label for="searchInput">Use this Search function to look for a form using the form's id</label>
 		<div class="mt-2 flex items-center gap-2">
 			<input

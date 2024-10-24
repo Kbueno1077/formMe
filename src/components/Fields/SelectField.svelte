@@ -9,7 +9,8 @@
 	}
 
 	let { id }: Props = $props();
-	let attributes: Attribute = $state();
+	let attributes: Attribute | undefined = $state(undefined);
+	let hasError = $state(false);
 
 	const inputAttributesStore = derived(getInputAttributes(id), ($attributes) => {
 		attributes = $attributes;
@@ -19,6 +20,18 @@
 		const unsubscribe = inputAttributesStore.subscribe(() => {});
 		return unsubscribe;
 	});
+
+	function validateInput(event: Event) {
+		const selectElement = event.target as HTMLSelectElement;
+		const value = selectElement.value;
+
+		if (attributes?.required && !value) {
+			hasError = true;
+			return;
+		}
+
+		hasError = false;
+	}
 </script>
 
 <div class="form-control space-y-2">
@@ -28,7 +41,12 @@
 		</label>
 	{/if}
 
-	<select class="select" disabled={!attributes?.options} {id}>
+	<select
+		class={`select ${hasError ? 'select-error' : ''}`}
+		disabled={!attributes?.options}
+		{id}
+		onchange={validateInput}
+	>
 		{#if attributes?.options}
 			{#each attributes.options as option (option)}
 				<option value={option}>{option}</option>
@@ -36,7 +54,7 @@
 		{/if}
 	</select>
 
-	{#if attributes?.errorMessage}
+	{#if hasError && attributes?.errorMessage}
 		<span class="error-message" id="error-message">{attributes.errorMessage}</span>
 	{/if}
 </div>

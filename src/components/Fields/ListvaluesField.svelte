@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { InputChip } from '@skeletonlabs/skeleton';
 	import { IconSquarePlus } from '@tabler/icons-svelte';
 	import { onMount } from 'svelte';
@@ -14,12 +12,13 @@
 
 	let { id }: Props = $props();
 
-	let attributes: Attribute = $state();
-	let inputChip: InputChip = $state();
+	let attributes: Attribute | undefined = $state(undefined);
+	let inputChip: InputChip | null = $state(null);
 	let currentValue = $state('');
 
-	let options;
-	run(() => {
+	let options: any[] | undefined = $state();
+
+	$effect(() => {
 		options = attributes?.options ?? [];
 	});
 
@@ -33,7 +32,7 @@
 	});
 
 	const handleAddOption = () => {
-		if (currentValue && !options.includes(currentValue) && currentValue.trim() !== '') {
+		if (currentValue && !options?.includes(currentValue) && currentValue.trim() !== '') {
 			addOption(id, currentValue);
 			currentValue = '';
 			if (inputChip) {
@@ -70,10 +69,10 @@
 			placeholder={attributes?.placeholder ?? ''}
 			{id}
 			max={attributes?.max ? parseInt(attributes.max) : undefined}
-			on:remove={(e) => handleRemoveOption(e.detail.chipValue)}
-			on:keydown={handleKeydown}
+			onremove={(e) => handleRemoveOption(e.detail.chipValue)}
+			onkeydown={handleKeydown}
 		/>
-		<button onclick={handleAddOption} class="btn-icon"><IconSquarePlus /></button>
+		<button onclick={handleAddOption} type="button" class="btn-icon"><IconSquarePlus /></button>
 	</div>
 
 	{#if attributes?.errorMessage}

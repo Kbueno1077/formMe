@@ -19,12 +19,7 @@
 		children?: import('svelte').Snippet;
 	}
 
-	let {
-		id,
-		type,
-		attributes,
-		children
-	}: Props = $props();
+	let { id, type, attributes, children }: Props = $props();
 
 	let PopUpComponent:
 		| typeof CheckboxPopup

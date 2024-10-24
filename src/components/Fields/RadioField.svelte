@@ -9,7 +9,8 @@
 	}
 
 	let { id }: Props = $props();
-	let attributes: Attribute = $state();
+	let attributes: Attribute | undefined = $state(undefined);
+	let hasError = $state(false);
 
 	const inputAttributesStore = derived(getInputAttributes(id), ($attributes) => {
 		attributes = $attributes;
@@ -19,6 +20,15 @@
 		const unsubscribe = inputAttributesStore.subscribe(() => {});
 		return unsubscribe;
 	});
+
+	function validateInput() {
+		const selectedOption = document.querySelector(`input[name="rbName_${id}}"]:checked`);
+		if (attributes?.required && !selectedOption) {
+			hasError = true;
+			return;
+		}
+		hasError = false;
+	}
 </script>
 
 <div class="form-control space-y-2">
@@ -33,11 +43,12 @@
 			{#each attributes.options as option (option)}
 				<div class="flex items-center space-x-2">
 					<input
-						class="radio"
+						class={`radio ${hasError ? 'radio-error' : ''}`}
 						type="radio"
 						id={`rb_${id}_${option}`}
 						name={`rbName_${id}}`}
 						value={option}
+						onchange={validateInput}
 					/>
 					<p>{option}</p>
 				</div>
@@ -45,7 +56,7 @@
 		{/if}
 	</div>
 
-	{#if attributes?.errorMessage}
+	{#if hasError && attributes?.errorMessage}
 		<span class="error-message" id="error-message">{attributes.errorMessage}</span>
 	{/if}
 </div>

@@ -9,7 +9,8 @@
 	}
 
 	let { id }: Props = $props();
-	let attributes: Attribute = $state();
+	let attributes: Attribute | undefined = $state(undefined);
+	let hasError = $state(false);
 
 	const inputAttributesStore = derived(getInputAttributes(id), ($attributes) => {
 		attributes = $attributes;
@@ -19,6 +20,27 @@
 		const unsubscribe = inputAttributesStore.subscribe(() => {});
 		return unsubscribe;
 	});
+
+	function validateInput(event: Event) {
+		const inputElement = event.target as HTMLInputElement;
+		const value = inputElement.value;
+
+		if (attributes?.required && !value) {
+			hasError = true;
+			return;
+		}
+
+		if (attributes?.type === 'url') {
+			try {
+				new URL(value);
+			} catch (_) {
+				hasError = true;
+				return;
+			}
+		}
+
+		hasError = false;
+	}
 </script>
 
 <div class="form-control space-y-2">
@@ -28,20 +50,21 @@
 		</label>
 	{/if}
 
-	<!-- class={`input ${attributes?.errorMessage ? 'input-error' : ''} ${$$props.class || ''}`} -->
-
 	<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 		<div class="input-group-shim">{attributes?.prefix ?? ''}</div>
 		<input
 			{...attributes}
 			type="text"
 			placeholder={attributes?.placeholder}
-			aria-invalid={!!attributes?.errorMessage}
-			aria-describedby={attributes?.errorMessage ? 'error-message' : undefined}
+			class={`${hasError ? 'input-error' : ''}`}
+			aria-invalid={hasError}
+			aria-describedby={hasError ? 'error-message' : undefined}
 			{id}
+			oninput={validateInput}
 		/>
 	</div>
-	{#if attributes?.errorMessage}
-		<span class="error-message" id="error-message">{attributes?.errorMessage}</span>
+
+	{#if hasError && attributes?.errorMessage}
+		<span class="error-message" id="error-message">{attributes.errorMessage}</span>
 	{/if}
 </div>

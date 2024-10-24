@@ -51,7 +51,10 @@
 
 		if (response === 'Title Error') {
 			toastStore.trigger(toastConfig('You must set a Title for this Form', 'error'));
+		} else if (response) {
+			toastStore.trigger(toastConfig('Your form has been created', 'success'));
 		}
+
 		creating = false;
 	};
 
@@ -90,14 +93,6 @@
 			one, share with the desired person, note that you must create 1 url for person
 		</p>
 	</div>
-	{#if creating}
-		<div class="flex w-full justify-center">
-			<div>
-				<Loader />
-				<p class="mt-10 text-xl font-bold">Creating . . .</p>
-			</div>
-		</div>
-	{/if}
 
 	{#if createdUrlSession.length > 0}
 		<h2 class="text-2xl font-bold">Created URLs in this session:</h2>
@@ -129,7 +124,13 @@
 		<button class="variant-filled-primary btn" onclick={checkValues}> Check Values </button>
 		<button class="variant-filled-primary btn" onclick={exportDataJSON}> Export to JSON </button>
 		<button class="variant-filled-primary btn" onclick={createForm} disabled={creating}>
-			Create Form
+			{#if creating}
+				<div
+					class="border-muted-300 h-7 w-7 animate-spin rounded-full border-4 border-t-primary-500"
+				></div>
+			{:else}
+				<span> Create Form </span>
+			{/if}
 		</button>
 	</div>
 </div>

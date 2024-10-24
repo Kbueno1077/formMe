@@ -25,6 +25,7 @@ export type InputType =
 	| 'date'
 	| 'datetime-local'
 	| 'month'
+	| 'url'
 	| 'week';
 
 export type Attribute = {
