@@ -1,7 +1,7 @@
 <script>
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import { AppBar, LightSwitch } from '@skeletonlabs/skeleton';
-	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
+	import { initializeStores, Toast, Modal } from '@skeletonlabs/skeleton';
 
 	import '../app.css';
 
@@ -13,7 +13,9 @@
 	initializeStores();
 </script>
 
+<Modal />
 <Toast position="br" />
+
 <AppBar>
 	{#snippet lead()}
 		<a href="/" class="flex items-center space-x-2">

@@ -23,7 +23,6 @@
 
 		valueStore.subscribe((value: any) => {
 			inputValue = value;
-			console.log('🚀 ~ valueStore.subscribe ~ value:', value);
 		});
 	});
 

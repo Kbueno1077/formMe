@@ -2,6 +2,7 @@
 	import FileUpload from '../FileUpload/FileUpload.svelte';
 	import SearchForm from '../SearchForm/SearchForm.svelte';
 	import TabTitle from '../TabTilte/TabTitle.svelte';
+	import Templates from '../Templates/Templates.svelte';
 </script>
 
 <div class="container mx-auto mb-8 space-y-8 sm:p-4">
@@ -19,4 +20,5 @@
 
 	<SearchForm />
 	<FileUpload />
+	<Templates />
 </div>

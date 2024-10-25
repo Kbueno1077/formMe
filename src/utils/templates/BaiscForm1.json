@@ -1,0 +1,150 @@
+{
+	"name": "Basic Form 1",
+	"description": "A basic form with input fields, select, radio, checkbox, and textarea",
+	"data": [
+		{
+			"id": "fullName",
+			"component": "input",
+			"attributes": {
+				"type": "text",
+				"withPlaceholder": true,
+				"placeholder": "Full Name",
+				"withLabel": true,
+				"label": "Full Name",
+				"withErrorMessage": true,
+				"errorMessage": "Full Name is required",
+				"required": true
+			},
+			"index": 0
+		},
+		{
+			"id": "email",
+			"component": "input",
+			"attributes": {
+				"type": "email",
+				"withPlaceholder": true,
+				"placeholder": "Email Address",
+				"withLabel": true,
+				"label": "Email Address",
+				"withErrorMessage": true,
+				"errorMessage": "Valid email is required",
+				"required": true
+			},
+			"index": 1
+		},
+		{
+			"id": "phone",
+			"component": "input",
+			"attributes": {
+				"type": "text",
+				"withPlaceholder": true,
+				"placeholder": "Phone Number",
+				"withLabel": true,
+				"label": "Phone Number",
+				"withErrorMessage": true,
+				"errorMessage": "Phone number is required",
+				"required": true
+			},
+			"index": 2
+		},
+		{
+			"id": "linkedin",
+			"component": "website",
+			"attributes": {
+				"prefix": "https://www.linkedin.com/in/",
+				"withPlaceholder": true,
+				"placeholder": "LinkedIn Profile",
+				"withLabel": true,
+				"label": "LinkedIn Profile",
+				"required": true,
+				"withErrorMessage": true,
+				"errorMessage": "Website required"
+			},
+			"index": 3
+		},
+		{
+			"id": "education",
+			"component": "select",
+			"attributes": {
+				"options": [
+					"High School",
+					"Associate's Degree",
+					"Bachelor's Degree",
+					"Master's Degree",
+					"PhD",
+					"Other"
+				],
+				"withLabel": true,
+				"label": "Highest Education Level",
+				"required": true,
+				"withErrorMessage": true,
+				"errorMessage": "Education level is required"
+			},
+			"index": 4
+		},
+		{
+			"id": "experience",
+			"component": "select",
+			"attributes": {
+				"options": ["0-1 years", "1-3 years", "3-5 years", "5-10 years", "10+ years"],
+				"withLabel": true,
+				"label": "Years of Experience",
+				"required": true,
+				"withErrorMessage": true,
+				"errorMessage": "Experience level is required"
+			},
+			"index": 5
+		},
+		{
+			"id": "skills",
+			"component": "list",
+			"attributes": {
+				"withPlaceholder": true,
+				"placeholder": "Add a skill",
+				"withLabel": true,
+				"label": "Skills"
+			},
+			"index": 6
+		},
+		{
+			"id": "jobType",
+			"component": "radio",
+			"attributes": {
+				"withLabel": true,
+				"label": "Preferred Job Type",
+				"options": ["Full-time", "Part-time", "Contract", "Internship"],
+				"required": true,
+				"withErrorMessage": true,
+				"errorMessage": "Job type preference is required"
+			},
+			"index": 7
+		},
+		{
+			"id": "checkbox",
+			"component": "checkbox",
+			"attributes": {
+				"options": ["Option 1", "Option 2"],
+				"withLabel": true,
+				"label": "Options",
+				"withErrorMessage": true,
+				"errorMessage": "This is the error message"
+			},
+			"index": 8
+		},
+		{
+			"id": "coverLetter",
+			"component": "textarea",
+			"attributes": {
+				"withPlaceholder": true,
+				"rows": "5",
+				"placeholder": "Tell us why you're interested in this position",
+				"withLabel": true,
+				"label": "Cover Letter",
+				"withErrorMessage": true,
+				"required": true,
+				"errorMessage": "Text is required"
+			},
+			"index": 9
+		}
+	]
+}
