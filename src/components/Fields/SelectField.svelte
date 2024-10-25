@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { getInputAttributes } from '../../store/store';
-	import { onMount } from 'svelte';
-	import { derived } from 'svelte/store';
-	import type { Attribute } from '../../utils/types';
+	import { getInputAttributes, getInputValue } from '../../store/store';
+	import type { Attribute, InputValueType } from '../../utils/types';
 
 	interface Props {
 		id: string;
@@ -10,15 +8,20 @@
 
 	let { id }: Props = $props();
 	let attributes: Attribute | undefined = $state(undefined);
+	let inputValue: InputValueType | undefined = $state(undefined);
 	let hasError = $state(false);
 
-	const inputAttributesStore = derived(getInputAttributes(id), ($attributes) => {
-		attributes = $attributes;
-	});
+	$effect(() => {
+		const attributesStore = getInputAttributes(id);
+		const valueStore = getInputValue(id);
 
-	onMount(() => {
-		const unsubscribe = inputAttributesStore.subscribe(() => {});
-		return unsubscribe;
+		attributesStore.subscribe((value) => {
+			attributes = value;
+		});
+
+		valueStore.subscribe((value: any) => {
+			inputValue = value;
+		});
 	});
 
 	function validateInput(event: Event) {
@@ -42,9 +45,11 @@
 	{/if}
 
 	<select
+		{...attributes}
 		class={`select ${hasError ? 'select-error' : ''}`}
 		disabled={!attributes?.options}
 		{id}
+		value={inputValue?.value ?? ''}
 		onchange={validateInput}
 	>
 		{#if attributes?.options}

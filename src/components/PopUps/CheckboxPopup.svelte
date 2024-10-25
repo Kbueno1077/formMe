@@ -41,11 +41,6 @@
 <button class=" btn-icon" use:popup={popupFeatured}><IconAdjustmentsHorizontal /></button>
 <div class="card z-50 w-72 p-4 shadow-xl" data-popup={target}>
 	<div class="space-y-2">
-		<div class="flex items-center justify-end gap-2">
-			<span>Is Required *</span>
-			<input class="checkbox" type="checkbox" />
-		</div>
-
 		<div class="flex items-center gap-2">
 			<input
 				class="input"
@@ -61,25 +56,6 @@
 				type="checkbox"
 				name="withLabel"
 				checked={attributes.withLabel ?? false}
-				onchange={handleUpdate}
-			/>
-		</div>
-
-		<div class="flex items-center gap-2">
-			<input
-				class="input"
-				type="text"
-				name="errorMessage"
-				placeholder="Error Message"
-				disabled={!attributes.withErrorMessage}
-				value={attributes.errorMessage ?? ''}
-				onchange={handleUpdate}
-			/>
-			<input
-				class="checkbox"
-				type="checkbox"
-				name="withErrorMessage"
-				checked={attributes.withErrorMessage ?? false}
 				onchange={handleUpdate}
 			/>
 		</div>

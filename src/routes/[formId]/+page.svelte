@@ -11,11 +11,18 @@
 	import WebsiteField from '../../components/Fields/WebsiteField.svelte';
 	import Loader from '../../components/Loader/Loader.svelte';
 	import TabTitle from '../../components/TabTilte/TabTitle.svelte';
-	import { inputsStore } from '../../store/store';
+	import {
+		bindFirestoreValuesToInputs,
+		checkValues,
+		extractValues,
+		importDataFirestore,
+		importDataValuesFirestore,
+		inputsStore
+	} from '../../store/store';
 
 	let formId = $page.params.formId;
 
-	let loading = $state(false);
+	let loading = $state(true);
 	let title = $state('');
 	let isSubmitted = $state(false);
 	let error: any = $state(null);
@@ -31,8 +38,12 @@
 
 			if (formSnap.exists()) {
 				title = formSnap.get('title');
-				inputsStore.set(formSnap.get('inputs'));
+				importDataFirestore(formSnap.get('inputs'));
 				isSubmitted = formSnap.get('submitted') ?? false;
+
+				if (isSubmitted) {
+					importDataValuesFirestore(formSnap.get('inputValues'));
+				}
 			} else {
 				error = 'Form not found';
 			}
@@ -46,8 +57,9 @@
 
 	async function markFormAsSubmitted() {
 		try {
-			// const formRef = doc(db, 'forms', formId);
-			// await updateDoc(formRef, { submitted: true });
+			const inputValues = extractValues();
+			const formRef = doc(db, 'forms', formId);
+			await updateDoc(formRef, { submitted: true, inputValues });
 
 			console.log('Form marked as submitted');
 		} catch (err) {
@@ -90,6 +102,10 @@
 			: 'Fill the form below and submit it to save your data'}
 	/>
 
+	<div class="card variant-ghost-surface p-4">
+		<p class="mt-3 text-center text-xl">This Form has been submitted, Here is the content!</p>
+	</div>
+
 	{#if loading}
 		<div class="flex w-full justify-center">
 			<div>
@@ -117,10 +133,6 @@
 			{#if !isSubmitted}
 				<div class="flex justify-end space-x-4">
 					<button type="submit" class="variant-filled-primary btn btn-lg"> Submit </button>
-				</div>
-			{:else}
-				<div class="text-center text-green-500">
-					<p>This Form has been submitted already!</p>
 				</div>
 			{/if}
 		</form>

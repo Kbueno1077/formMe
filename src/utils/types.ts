@@ -2,15 +2,21 @@ export type Field = {
 	id: string;
 	component: string;
 	attributes: Attribute;
-
 	index: number;
-	getValue: () => string;
+	getValue: () => unknown;
 };
 
 export type SavedUrl = {
 	id: string;
 	title: string;
 	url: string;
+};
+
+export type InputValueType = {
+	id: string;
+	value: string;
+	label: string;
+	component: string;
 };
 
 export type InputType =

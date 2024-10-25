@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { derived } from 'svelte/store';
-	import { getInputAttributes } from '../../store/store';
-	import type { Attribute } from '../../utils/types';
+	import { getInputAttributes, getInputValue } from '../../store/store';
+	import type { Attribute, InputValueType } from '../../utils/types';
 
 	interface Props {
 		id: string;
@@ -11,15 +9,20 @@
 
 	let { id }: Props = $props();
 	let attributes: Attribute | undefined = $state(undefined);
+	let inputValue: InputValueType | undefined = $state(undefined);
 	let hasError = $state(false);
 
-	const inputAttributesStore = derived(getInputAttributes(id), ($attributes) => {
-		attributes = $attributes;
-	});
+	$effect(() => {
+		const attributesStore = getInputAttributes(id);
+		const valueStore = getInputValue(id);
 
-	onMount(() => {
-		const unsubscribe = inputAttributesStore.subscribe(() => {});
-		return unsubscribe;
+		attributesStore.subscribe((value) => {
+			attributes = value;
+		});
+
+		valueStore.subscribe((value: any) => {
+			inputValue = value;
+		});
 	});
 
 	function validateInput(event: Event) {
@@ -56,6 +59,7 @@
 		aria-invalid={hasError}
 		aria-describedby={hasError ? 'error-message' : undefined}
 		{id}
+		value={inputValue?.value ?? ''}
 		oninput={validateInput}
 	/>
 

@@ -2,29 +2,30 @@ import { db } from '$lib/firebase/firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import randomstring from 'randomstring';
 import { derived, get, writable, type Writable } from 'svelte/store';
-import type { Attribute, Field, SavedUrl } from '../utils/types';
+import type { Attribute, Field, InputValueType, SavedUrl } from '../utils/types';
 import { createGetValue } from '../utils/getAutoValue';
 
 export const createdUrlsInSession: Writable<SavedUrl[]> = writable([]);
 export const inputsStore: Writable<Field[]> = writable([]);
+export const inputsValueStore: Writable<InputValueType[]> = writable([]);
 export const formTitle: Writable<string> = writable('');
 
-export function updateFormTitle(newTitle: string) {
-	formTitle.set(newTitle);
-}
-
+// DB
 export async function storeInDB() {
 	const title = get(formTitle);
-	const inputs = get(inputsStore);
 
 	if (!title) {
 		return 'Title Error';
 	}
 
+	const inputs = get(inputsStore);
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const inputsWithoutGetValue = inputs.map(({ getValue, ...rest }) => rest);
 	try {
 		const formData = {
 			title: title,
-			inputs
+			inputs: inputsWithoutGetValue
 		};
 
 		const docRef = await addDoc(collection(db, 'forms'), formData);
@@ -37,8 +38,41 @@ export async function storeInDB() {
 		return docRef.id;
 	} catch (error) {
 		console.error('Error saving form:', error);
-		throw error;
+		return null;
 	}
+}
+
+// TITLE
+export function updateFormTitle(newTitle: string) {
+	formTitle.set(newTitle);
+}
+
+// INPUTS HANDLERS
+export function getInputs() {
+	return get(inputsStore);
+}
+
+export function checkValues() {
+	const inputs = get(inputsStore);
+
+	inputs.forEach((input: Field) => {
+		console.log(input.getValue());
+	});
+}
+
+export function extractValues() {
+	const inputs = get(inputsStore);
+
+	const inputValues = inputs.map((input: Field) => {
+		return {
+			id: input.id,
+			value: input.getValue(),
+			label: input.attributes.label ?? 'NO_LABEL_PROVIDED',
+			component: input.component
+		};
+	});
+
+	return inputValues;
 }
 
 export function addInput(component: string, attributes: object) {
@@ -77,10 +111,6 @@ export function removeInput(id: string) {
 	inputsStore.update((inputs: Field[]) => inputs.filter((input: Field) => input.id !== id));
 }
 
-export function getInputs() {
-	return get(inputsStore);
-}
-
 export function updateInputAttributes(id: string, newAttributes: object) {
 	inputsStore.update((inputs: Field[]) =>
 		inputs.map((input: Field) =>
@@ -89,14 +119,7 @@ export function updateInputAttributes(id: string, newAttributes: object) {
 	);
 }
 
-export function checkValues() {
-	const inputs = get(inputsStore);
-
-	inputs.forEach((input: Field) => {
-		console.log(input.getValue());
-	});
-}
-
+// + - Options
 export function addOption(inputId: string, option: string) {
 	inputsStore.update((inputs: Field[]) =>
 		inputs.map((input: Field) =>
@@ -129,14 +152,7 @@ export function removeOption(inputId: string, option: string) {
 	);
 }
 
-// Function to get attributes of a specific input by id
-export function getInputAttributes(id: string) {
-	return derived(
-		inputsStore,
-		($inputs) => $inputs.find((input: Field) => input.id === id)?.attributes || {}
-	);
-}
-
+// JSON
 export function exportDataJSON() {
 	const inputs = get(inputsStore);
 
@@ -160,6 +176,34 @@ export function importDataJson(newInputs: Field[]) {
 	}));
 
 	inputsStore.set(addGetValueFunction);
+}
+
+export function importDataFirestore(newInputs: Field[]) {
+	const addGetValueFunction = newInputs.map((input) => ({
+		...input,
+		getValue: createGetValue(input)
+	}));
+
+	inputsStore.set(addGetValueFunction);
+}
+
+export function importDataValuesFirestore(newInputs: InputValueType[]) {
+	inputsValueStore.set(newInputs);
+}
+
+// ATTRIBUTES
+export function getInputAttributes(id: string) {
+	return derived(
+		inputsStore,
+		($inputs) => $inputs.find((input: Field) => input.id === id)?.attributes || {}
+	);
+}
+
+export function getInputValue(id: string) {
+	return derived(
+		inputsValueStore,
+		($inputsValue) => $inputsValue.find((input: InputValueType) => input.id === id) || {}
+	);
 }
 
 export function handleUpdateAttributes(target: string, attributesData: Attribute, e: Event) {
@@ -207,4 +251,13 @@ export function handleUpdateAttributes(target: string, attributesData: Attribute
 
 	const newAttributes = { ...attributes, [name]: value };
 	updateInputAttributes(target, newAttributes);
+}
+
+export function bindFirestoreValuesToInputs(inputValues: InputValueType[]) {
+	inputValues.forEach((input: InputValueType) => {
+		const element = document.getElementById(input.id);
+		if (element) {
+			(element as HTMLInputElement).value = input.value;
+		}
+	});
 }

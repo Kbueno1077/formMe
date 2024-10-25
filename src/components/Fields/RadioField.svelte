@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { getInputAttributes } from '../../store/store';
-	import { onMount } from 'svelte';
-	import { derived } from 'svelte/store';
-	import type { Attribute } from '../../utils/types';
+	import { getInputAttributes, getInputValue } from '../../store/store';
+	import type { Attribute, InputValueType } from '../../utils/types';
 
 	interface Props {
 		id: string;
@@ -10,19 +8,24 @@
 
 	let { id }: Props = $props();
 	let attributes: Attribute | undefined = $state(undefined);
+	let inputValue: InputValueType | undefined = $state(undefined);
 	let hasError = $state(false);
 
-	const inputAttributesStore = derived(getInputAttributes(id), ($attributes) => {
-		attributes = $attributes;
-	});
+	$effect(() => {
+		const attributesStore = getInputAttributes(id);
+		const valueStore = getInputValue(id);
 
-	onMount(() => {
-		const unsubscribe = inputAttributesStore.subscribe(() => {});
-		return unsubscribe;
+		attributesStore.subscribe((value) => {
+			attributes = value;
+		});
+
+		valueStore.subscribe((value: any) => {
+			inputValue = value;
+		});
 	});
 
 	function validateInput() {
-		const selectedOption = document.querySelector(`input[name="rbName_${id}}"]:checked`);
+		const selectedOption = document.querySelector(`input[name="rbName_${id}"]:checked`);
 		if (attributes?.required && !selectedOption) {
 			hasError = true;
 			return;
@@ -43,11 +46,13 @@
 			{#each attributes.options as option (option)}
 				<div class="flex items-center space-x-2">
 					<input
+						{...attributes}
 						class={`radio ${hasError ? 'radio-error' : ''}`}
 						type="radio"
 						id={`rb_${id}_${option}`}
-						name={`rbName_${id}}`}
+						name={`rbName_${id}`}
 						value={option}
+						checked={inputValue && inputValue?.value === option}
 						onchange={validateInput}
 					/>
 					<p>{option}</p>

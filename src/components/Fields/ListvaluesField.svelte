@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { InputChip } from '@skeletonlabs/skeleton';
 	import { IconSquarePlus } from '@tabler/icons-svelte';
-	import { onMount } from 'svelte';
-	import { derived } from 'svelte/store';
-	import { addOption, getInputAttributes, removeOption } from '../../store/store';
-	import type { Attribute } from '../../utils/types';
+	import { addOption, getInputAttributes, getInputValue, removeOption } from '../../store/store';
+	import type { Attribute, InputValueType } from '../../utils/types';
 
 	interface Props {
 		id: string;
@@ -13,22 +11,31 @@
 	let { id }: Props = $props();
 
 	let attributes: Attribute | undefined = $state(undefined);
+	let inputValue: InputValueType | undefined = $state(undefined);
 	let inputChip: InputChip | null = $state(null);
 	let currentValue = $state('');
-
 	let options: any[] | undefined = $state();
 
 	$effect(() => {
+		const attributesStore = getInputAttributes(id);
+		const valueStore = getInputValue(id);
+
+		attributesStore.subscribe((value) => {
+			attributes = value;
+		});
+
+		valueStore.subscribe((value: any) => {
+			inputValue = value;
+		});
+	});
+
+	// Update options when attributes change
+	$effect(() => {
 		options = attributes?.options ?? [];
-	});
 
-	const inputAttributesStore = derived(getInputAttributes(id), ($attributes) => {
-		attributes = $attributes;
-	});
-
-	onMount(() => {
-		const unsubscribe = inputAttributesStore.subscribe(() => {});
-		return unsubscribe;
+		if (inputValue?.value) {
+			options = inputValue.value.split(',').map((option: string) => option.trim());
+		}
 	});
 
 	const handleAddOption = () => {
@@ -69,10 +76,12 @@
 			placeholder={attributes?.placeholder ?? ''}
 			{id}
 			max={attributes?.max ? parseInt(attributes.max) : undefined}
-			onremove={(e) => handleRemoveOption(e.detail.chipValue)}
-			onkeydown={handleKeydown}
+			on:remove={(e) => handleRemoveOption(e.detail.chipValue)}
+			on:keydown={handleKeydown}
 		/>
-		<button onclick={handleAddOption} type="button" class="btn-icon"><IconSquarePlus /></button>
+		<button onclick={handleAddOption} type="button" class="btn-icon">
+			<IconSquarePlus />
+		</button>
 	</div>
 
 	{#if attributes?.errorMessage}

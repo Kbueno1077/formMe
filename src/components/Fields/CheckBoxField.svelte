@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { getInputAttributes } from '../../store/store';
-	import { onMount } from 'svelte';
-	import { derived } from 'svelte/store';
-	import type { Attribute } from '../../utils/types';
+	import { getInputAttributes, getInputValue } from '../../store/store';
+	import type { Attribute, InputValueType } from '../../utils/types';
 
 	interface Props {
 		id: string;
@@ -10,15 +8,31 @@
 
 	let { id }: Props = $props();
 	let attributes: Attribute | undefined = $state(undefined);
+	let inputValue: InputValueType | undefined = $state(undefined);
 	let hasError = $state(false);
+	let options: any[] | undefined = $state();
+	let optionsChecked: any[] | undefined = $state();
 
-	const inputAttributesStore = derived(getInputAttributes(id), ($attributes) => {
-		attributes = $attributes;
+	$effect(() => {
+		const attributesStore = getInputAttributes(id);
+		const valueStore = getInputValue(id);
+
+		attributesStore.subscribe((value) => {
+			attributes = value;
+		});
+
+		valueStore.subscribe((value: any) => {
+			inputValue = value;
+			console.log('🚀 ~ valueStore.subscribe ~ value:', value);
+		});
 	});
 
-	onMount(() => {
-		const unsubscribe = inputAttributesStore.subscribe(() => {});
-		return unsubscribe;
+	$effect(() => {
+		options = attributes?.options ?? [];
+
+		if (inputValue?.value) {
+			optionsChecked = inputValue.value.split(',').map((option: string) => option.trim());
+		}
 	});
 
 	function validateInput() {
@@ -39,14 +53,16 @@
 	{/if}
 
 	<div class="space-y-2">
-		{#if attributes?.options}
-			{#each attributes.options as option (option)}
+		{#if options}
+			{#each options as option (option)}
 				<div class="flex items-center space-x-2">
 					<input
+						{...attributes}
 						class={`checkbox ${hasError ? 'checkbox-error' : ''}`}
 						type="checkbox"
 						id={`cb_${id}_${option}`}
 						name={`cbName_${id}`}
+						checked={inputValue && optionsChecked?.includes(option)}
 						onchange={validateInput}
 					/>
 					<p class="font-bold">{option}</p>
