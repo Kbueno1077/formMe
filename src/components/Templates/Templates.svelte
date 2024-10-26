@@ -36,7 +36,7 @@
 	<h3 class="h3 mb-2">Start with a Template:</h3>
 	<div class="flex gap-2">
 		<button
-			class="card card-hover block p-4"
+			class="card card-hover block w-full max-w-[500px] p-4"
 			onclick={() => {
 				selectedTemplate = basicTemplate1.data;
 				triggerConfirm();
@@ -44,7 +44,7 @@
 		>
 			<div class="flex flex-col items-start justify-start">
 				<h3 class="text-2xl font-bold">{basicTemplate1.name}</h3>
-				<p>{basicTemplate1.description}</p>
+				<p class="mt-2 text-start">{basicTemplate1.description}</p>
 			</div>
 		</button>
 	</div>

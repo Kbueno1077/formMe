@@ -1,18 +1,33 @@
 {
 	"name": "Basic Form 1",
-	"description": "A basic form with input fields, select, radio, checkbox, and textarea",
+	"description": "A basic form for a job position with input fields, select, radio, checkbox, and textarea",
 	"data": [
 		{
-			"id": "fullName",
+			"id": "Name",
 			"component": "input",
 			"attributes": {
 				"type": "text",
 				"withPlaceholder": true,
-				"placeholder": "Full Name",
+				"placeholder": "Name",
 				"withLabel": true,
-				"label": "Full Name",
+				"label": "Name",
 				"withErrorMessage": true,
-				"errorMessage": "Full Name is required",
+				"errorMessage": "Name is required",
+				"required": true
+			},
+			"index": 0
+		},
+		{
+			"id": "lastName",
+			"component": "input",
+			"attributes": {
+				"type": "text",
+				"withPlaceholder": true,
+				"placeholder": "Last Name",
+				"withLabel": true,
+				"label": "Last Name",
+				"withErrorMessage": true,
+				"errorMessage": "Last Name is required",
 				"required": true
 			},
 			"index": 0
@@ -48,17 +63,15 @@
 			"index": 2
 		},
 		{
-			"id": "linkedin",
+			"id": "website",
 			"component": "website",
 			"attributes": {
-				"prefix": "https://www.linkedin.com/in/",
+				"prefix": "https://",
 				"withPlaceholder": true,
-				"placeholder": "LinkedIn Profile",
+				"placeholder": "Website",
 				"withLabel": true,
-				"label": "LinkedIn Profile",
-				"required": true,
-				"withErrorMessage": true,
-				"errorMessage": "Website required"
+				"label": "Website",
+				"required": false
 			},
 			"index": 3
 		},
@@ -123,11 +136,12 @@
 			"id": "checkbox",
 			"component": "checkbox",
 			"attributes": {
-				"options": ["Option 1", "Option 2"],
+				"options": ["English", "Spanish", "French", "German", "Chinese"],
 				"withLabel": true,
-				"label": "Options",
+				"label": "Which languages do you can communicate? ",
 				"withErrorMessage": true,
-				"errorMessage": "This is the error message"
+				"errorMessage": "At least one language is required",
+				"required": true
 			},
 			"index": 8
 		},
@@ -137,12 +151,9 @@
 			"attributes": {
 				"withPlaceholder": true,
 				"rows": "5",
-				"placeholder": "Tell us why you're interested in this position",
+				"placeholder": "Optional text",
 				"withLabel": true,
-				"label": "Cover Letter",
-				"withErrorMessage": true,
-				"required": true,
-				"errorMessage": "Text is required"
+				"label": "Tell us why you're interested in this position"
 			},
 			"index": 9
 		}
