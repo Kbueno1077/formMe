@@ -18,7 +18,6 @@
 	import SelectField from '../Fields/SelectField.svelte';
 	import TextAreaField from '../Fields/TextAreaField.svelte';
 	import WebsiteField from '../Fields/WebsiteField.svelte';
-	import Loader from '../Loader/Loader.svelte';
 	import TabTitle from '../TabTilte/TabTitle.svelte';
 
 	let inputs: Field[] = $state([]);

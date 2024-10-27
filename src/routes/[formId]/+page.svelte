@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { db } from '$lib/firebase/firebase';
-	import { doc, getDoc } from 'firebase/firestore';
-	import { SvelteComponent } from 'svelte';
+	import { doc, getDoc, updateDoc } from 'firebase/firestore';
 	import CheckBoxField from '../../components/Fields/CheckBoxField.svelte';
 	import InputField from '../../components/Fields/InputField.svelte';
 	import ListvaluesField from '../../components/Fields/ListvaluesField.svelte';
@@ -10,14 +9,20 @@
 	import SelectField from '../../components/Fields/SelectField.svelte';
 	import TextAreaField from '../../components/Fields/TextAreaField.svelte';
 	import WebsiteField from '../../components/Fields/WebsiteField.svelte';
+	import Loader from '../../components/Loader/Loader.svelte';
 	import TabTitle from '../../components/TabTilte/TabTitle.svelte';
-	import type { Field } from '../../utils/types';
+	import {
+		extractValues,
+		importDataFirestore,
+		importDataValuesFirestore,
+		inputsStore
+	} from '../../store/store';
 
 	let formId = $page.params.formId;
 
-	let loading = $state(false);
+	let loading = $state(true);
 	let title = $state('');
-	let inputs: Field[] = $state([]);
+	let isSubmitted = $state(false);
 	let error: any = $state(null);
 
 	async function fetchFormData() {
@@ -31,7 +36,12 @@
 
 			if (formSnap.exists()) {
 				title = formSnap.get('title');
-				inputs = formSnap.get('inputs');
+				importDataFirestore(formSnap.get('inputs'));
+				isSubmitted = formSnap.get('submitted') ?? false;
+
+				if (isSubmitted) {
+					importDataValuesFirestore(formSnap.get('inputValues'));
+				}
 			} else {
 				error = 'Form not found';
 			}
@@ -40,6 +50,19 @@
 			error = 'Error loading form data';
 		} finally {
 			loading = false;
+		}
+	}
+
+	async function markFormAsSubmitted() {
+		try {
+			const inputValues = extractValues();
+			const formRef = doc(db, 'forms', formId);
+			await updateDoc(formRef, { submitted: true, inputValues });
+
+			console.log('Form marked as submitted');
+		} catch (err) {
+			console.error('Error updating form:', err);
+			error = 'Error updating form data';
 		}
 	}
 
@@ -69,30 +92,53 @@
 	}
 </script>
 
-<div class="container mx-auto mb-8 space-y-8 sm:p-4">
+<div class="container mx-auto mb-8 space-y-10 sm:p-4">
 	<TabTitle
-		title="Form Result"
-		description="Great job customizing your inputs! In this Form tab, you'll see the final result of your creative form:"
+		title={isSubmitted ? 'Submitted Form' : 'Fill and Submit Form'}
+		description={isSubmitted
+			? 'This is the filled and Submitted form'
+			: 'Fill the form below and submit it to save your data'}
 	/>
 
-	{#if inputs.length > 0}
-		<div class="card card-hover block space-y-10 p-4">
+	<div class="card variant-ghost-surface p-4">
+		<p class="mt-3 text-center text-xl">This Form has been submitted, Here is the content!</p>
+	</div>
+
+	{#if loading}
+		<div class="flex w-full justify-center">
+			<div>
+				<Loader />
+				<p class="mt-10 text-xl font-bold">Loading . . .</p>
+			</div>
+		</div>
+	{/if}
+
+	{#if error}
+		<div class="card variant-ghost-surface p-4">
+			<p class="text-center">{error}</p>
+		</div>
+	{/if}
+
+	{#if $inputsStore.length > 0}
+		<form onsubmit={markFormAsSubmitted} class="card card-hover block space-y-10 p-4">
 			<h2 class="text-4xl font-bold">{title}</h2>
 
-			{#each inputs as input (input.id)}
+			{#each $inputsStore as input (input.id)}
 				{@const SvelteComponent = getPopUpComponent(input.id, input.component)}
 				<SvelteComponent id={input.id} />
 			{/each}
-		</div>
-	{:else}
+
+			{#if !isSubmitted}
+				<div class="flex justify-end space-x-4">
+					<button type="submit" class="variant-filled-primary btn btn-lg"> Submit </button>
+				</div>
+			{/if}
+		</form>
+	{:else if !loading}
 		<div class="card variant-ghost-surface p-4">
 			<p class="text-center">
 				No inputs to show. Please add them in the Components tab and edit them in the Preview tab
 			</p>
 		</div>
 	{/if}
-
-	<div class="flex justify-center space-x-4">
-		<button class="variant-filled-primary btn"> Submit </button>
-	</div>
 </div>
