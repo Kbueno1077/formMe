@@ -6,9 +6,11 @@
 
 	interface Props {
 		id: string;
+		isSubmitted: boolean;
 	}
 
-	let { id }: Props = $props();
+	//TODO: FIX VALUES, ADD, REMOVE
+	let { id, isSubmitted }: Props = $props();
 
 	let attributes: Attribute | undefined = $state(undefined);
 	let inputValue: InputValueType | undefined = $state(undefined);
@@ -36,6 +38,10 @@
 		if (inputValue?.value) {
 			options = inputValue.value.split(',').map((option: string) => option.trim());
 		}
+	});
+
+	$effect(() => {
+		console.log(options);
 	});
 
 	const handleAddOption = () => {
@@ -76,10 +82,16 @@
 			placeholder={attributes?.placeholder ?? ''}
 			{id}
 			max={attributes?.max ? parseInt(attributes.max) : undefined}
-			on:remove={(e) => handleRemoveOption(e.detail.chipValue)}
-			on:keydown={handleKeydown}
+			onremove={(e: any) => handleRemoveOption(e.detail.chipValue)}
+			onkeydown={handleKeydown}
+			disabled={isSubmitted || attributes?.disabled}
 		/>
-		<button onclick={handleAddOption} type="button" class="btn-icon">
+		<button
+			onclick={handleAddOption}
+			type="button"
+			class="btn-icon"
+			disabled={isSubmitted || attributes?.disabled}
+		>
 			<IconSquarePlus />
 		</button>
 	</div>

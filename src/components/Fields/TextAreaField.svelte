@@ -4,9 +4,10 @@
 
 	interface Props {
 		id: string;
+		isSubmitted: boolean;
 	}
 
-	let { id }: Props = $props();
+	let { id, isSubmitted }: Props = $props();
 	let attributes: Attribute | undefined = $state(undefined);
 	let inputValue: InputValueType | undefined = $state(undefined);
 	let hasError = $state(false);
@@ -52,6 +53,7 @@
 		{id}
 		value={inputValue?.value ?? ''}
 		oninput={validateInput}
+		disabled={isSubmitted || attributes?.disabled}
 	></textarea>
 
 	{#if hasError && attributes?.errorMessage}

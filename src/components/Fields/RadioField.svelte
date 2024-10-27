@@ -4,9 +4,11 @@
 
 	interface Props {
 		id: string;
+		isSubmitted: boolean;
 	}
 
-	let { id }: Props = $props();
+	//TODO: FIX MARK GET SUBMITTED VALUE
+	let { id, isSubmitted }: Props = $props();
 	let attributes: Attribute | undefined = $state(undefined);
 	let inputValue: InputValueType | undefined = $state(undefined);
 	let hasError = $state(false);
@@ -54,6 +56,7 @@
 						value={option}
 						checked={inputValue && inputValue?.value === option}
 						onchange={validateInput}
+						disabled={isSubmitted || attributes?.disabled}
 					/>
 					<p>{option}</p>
 				</div>

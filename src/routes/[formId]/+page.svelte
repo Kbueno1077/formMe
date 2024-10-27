@@ -104,9 +104,11 @@
 			: 'Fill the form below and submit it to save your data'}
 	/>
 
-	<div class="card variant-ghost-surface p-4">
-		<p class="mt-3 text-center text-xl">This Form has been submitted, Here is the content!</p>
-	</div>
+	{#if isSubmitted && !loading}
+		<div class="card variant-ghost-surface p-4">
+			<p class="mt-3 text-center text-xl">This Form has been submitted, Here is the content!</p>
+		</div>
+	{/if}
 
 	{#if loading}
 		<div class="flex w-full justify-center">
@@ -123,7 +125,7 @@
 
 			{#each $inputsStore as input (input.id)}
 				{@const SvelteComponent = getPopUpComponent(input.id, input.component)}
-				<SvelteComponent id={input.id} />
+				<SvelteComponent id={input.id} {isSubmitted} />
 			{/each}
 
 			{#if !isSubmitted}

@@ -4,9 +4,10 @@
 
 	interface Props {
 		id: string;
+		isSubmitted: boolean;
 	}
 
-	let { id }: Props = $props();
+	let { id, isSubmitted }: Props = $props();
 	let attributes: Attribute | undefined = $state(undefined);
 	let inputValue: InputValueType | undefined = $state(undefined);
 	let hasError = $state(false);
@@ -47,7 +48,7 @@
 	<select
 		{...attributes}
 		class={`select ${hasError ? 'select-error' : ''}`}
-		disabled={!attributes?.options}
+		disabled={isSubmitted || attributes?.disabled || !attributes?.options}
 		{id}
 		value={inputValue?.value ?? ''}
 		onchange={validateInput}

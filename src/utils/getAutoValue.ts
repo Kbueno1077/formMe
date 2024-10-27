@@ -16,11 +16,14 @@ export function createGetValue(input: Field) {
 		}
 
 		if (input.component === 'radio') {
-			const radioSelected = input.attributes.options?.map((option) =>
-				(document.getElementById(`rb_${input.id}_${option}`) as HTMLInputElement)?.checked
-					? option
-					: ''
-			);
+			const radioSelected =
+				input.attributes.options
+					?.map((option) =>
+						(document.getElementById(`rb_${input.id}_${option}`) as HTMLInputElement)?.checked
+							? option
+							: ''
+					)
+					.join(', ') || '';
 
 			return radioSelected;
 		}
@@ -33,6 +36,7 @@ export function createGetValue(input: Field) {
 		}
 
 		if (input.component === 'list') {
+			console.log(input.attributes);
 			const list = input.attributes.options?.join(', ') || '';
 			return `${list}`;
 		}
