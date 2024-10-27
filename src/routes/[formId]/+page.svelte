@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { db } from '$lib/firebase/firebase';
+	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { doc, getDoc, updateDoc } from 'firebase/firestore';
 	import CheckBoxField from '../../components/Fields/CheckBoxField.svelte';
 	import InputField from '../../components/Fields/InputField.svelte';
@@ -17,18 +18,20 @@
 		importDataValuesFirestore,
 		inputsStore
 	} from '../../store/store';
+	import { toastConfig } from '../../utils/validation';
+	import { goto } from '$app/navigation';
+
+	const toastStore = getToastStore();
 
 	let formId = $page.params.formId;
 
 	let loading = $state(true);
 	let title = $state('');
 	let isSubmitted = $state(false);
-	let error: any = $state(null);
 
 	async function fetchFormData() {
 		try {
 			loading = true;
-			error = null;
 
 			console.log(formId);
 			const formRef = doc(db, 'forms', formId);
@@ -43,11 +46,11 @@
 					importDataValuesFirestore(formSnap.get('inputValues'));
 				}
 			} else {
-				error = 'Form not found';
+				toastStore.trigger(toastConfig('Form not found', 'error'));
 			}
 		} catch (err) {
 			console.error('Error fetching form:', err);
-			error = 'Error loading form data';
+			toastStore.trigger(toastConfig('Error loading form data', 'error'));
 		} finally {
 			loading = false;
 		}
@@ -59,10 +62,11 @@
 			const formRef = doc(db, 'forms', formId);
 			await updateDoc(formRef, { submitted: true, inputValues });
 
-			console.log('Form marked as submitted');
+			toastStore.trigger(toastConfig('Your Form has been submited', 'success'));
+			goto(`/`);
 		} catch (err) {
 			console.error('Error updating form:', err);
-			error = 'Error updating form data';
+			toastStore.trigger(toastConfig('Error updating form data', 'error'));
 		}
 	}
 
@@ -110,12 +114,6 @@
 				<Loader />
 				<p class="mt-10 text-xl font-bold">Loading . . .</p>
 			</div>
-		</div>
-	{/if}
-
-	{#if error}
-		<div class="card variant-ghost-surface p-4">
-			<p class="text-center">{error}</p>
 		</div>
 	{/if}
 
