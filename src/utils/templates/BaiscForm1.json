@@ -138,10 +138,7 @@
 			"attributes": {
 				"options": ["English", "Spanish", "French", "German", "Chinese"],
 				"withLabel": true,
-				"label": "Which languages do you can communicate? ",
-				"withErrorMessage": true,
-				"errorMessage": "At least one language is required",
-				"required": true
+				"label": "Which languages do you can communicate? "
 			},
 			"index": 8
 		},
