@@ -1,10 +1,9 @@
 import { db } from '$lib/firebase/firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import randomstring from 'randomstring';
 import { derived, get, writable, type Writable } from 'svelte/store';
 import type { Attribute, Field, InputValueType, SavedUrl } from '../utils/types';
 import { createGetValue } from '../utils/getAutoValue';
-import firebase from 'firebase/compat/app';
 
 export const createdUrlsInSession: Writable<SavedUrl[]> = writable([]);
 export const inputsStore: Writable<Field[]> = writable([]);
@@ -27,7 +26,7 @@ export async function storeInDB() {
 		const formData = {
 			title: title,
 			inputs: inputsWithoutGetValue,
-			createdAt: firebase.firestore.FieldValue.serverTimestamp()
+			createdAt: serverTimestamp()
 		};
 
 		const docRef = await addDoc(collection(db, 'forms'), formData);
