@@ -76,6 +76,12 @@ export function extractValues() {
 	return inputValues;
 }
 
+export function clearAllInputs() {
+	inputsStore.set([]);
+	inputsValueStore.set([]);
+	formTitle.set('');
+}
+
 export function addInput(component: string, attributes: object) {
 	const id = randomstring.generate(10);
 

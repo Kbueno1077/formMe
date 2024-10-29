@@ -11,6 +11,7 @@
 	import WebsiteField from '../Fields/WebsiteField.svelte';
 	import TabTitle from '../TabTilte/TabTitle.svelte';
 	import PreviewWrapper from '../Wrapper/PreviewWrapper.svelte';
+	import Clear from '../Clear/Clear.svelte';
 
 	let inputs: Field[] = $state([]);
 	let formTitle: string = '';
@@ -52,22 +53,27 @@
 		description="Welcome to the Preview tab! Here you can personalize your form inputs to match your what your want"
 	/>
 
-	<div>
-		<label for="tilteInput">Add a title to your form</label>
-		<input
-			id="tilteInput"
-			class="input mt-2"
-			type="text"
-			placeholder="Form Title"
-			oninput={handleTitleChange}
-		/>
+	<div class="flex items-center gap-2">
+		<div class="w-full">
+			<label for="tilteInput">Add a title to your form</label>
+			<input
+				id="tilteInput"
+				class="input mt-2"
+				type="text"
+				placeholder="Form Title"
+				oninput={handleTitleChange}
+			/>
+		</div>
+		<div class="mt-8">
+			<Clear />
+		</div>
 	</div>
 
 	{#if inputs.length > 0}
 		{#each inputs as input (input.id)}
 			<PreviewWrapper type={input.component} id={input.id} attributes={input.attributes}>
 				{@const SvelteComponent = getPopUpComponent(input.id, input.component)}
-				<SvelteComponent id={input.id} />
+				<SvelteComponent id={input.id} isSubmitted={false} />
 			</PreviewWrapper>
 		{/each}
 	{:else}

@@ -31,7 +31,6 @@
 		options = attributes?.options ?? [];
 
 		if (inputValue?.value) {
-			console.log('🚀 ~ $effect ~ inputValue:', inputValue);
 			optionsChecked = inputValue.value.split(',').map((option: string) => option.trim());
 		}
 	});
