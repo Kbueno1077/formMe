@@ -7,10 +7,11 @@
 		isSubmitted: boolean;
 	}
 
-	//TODO: FIX MARK GET SUBMITTED VALUE
 	let { id, isSubmitted }: Props = $props();
 	let attributes: Attribute | undefined = $state(undefined);
 	let inputValue: InputValueType | undefined = $state(undefined);
+	let options: any[] | undefined = $state();
+	let optionsChecked: any[] | undefined = $state();
 	let hasError = $state(false);
 
 	$effect(() => {
@@ -24,6 +25,15 @@
 		valueStore.subscribe((value: any) => {
 			inputValue = value;
 		});
+	});
+
+	$effect(() => {
+		options = attributes?.options ?? [];
+
+		if (inputValue?.value) {
+			console.log('🚀 ~ $effect ~ inputValue:', inputValue);
+			optionsChecked = inputValue.value.split(',').map((option: string) => option.trim());
+		}
 	});
 
 	function validateInput() {
@@ -44,8 +54,8 @@
 	{/if}
 
 	<div class="space-y-2">
-		{#if attributes?.options}
-			{#each attributes.options as option (option)}
+		{#if options}
+			{#each options as option (option)}
 				<div class="flex items-center space-x-2">
 					<input
 						{...attributes}
@@ -54,7 +64,7 @@
 						id={`rb_${id}_${option}`}
 						name={`rbName_${id}`}
 						value={option}
-						checked={inputValue && inputValue?.value === option}
+						checked={inputValue && optionsChecked?.includes(option)}
 						onchange={validateInput}
 						disabled={isSubmitted || attributes?.disabled}
 					/>
