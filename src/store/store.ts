@@ -128,6 +128,7 @@ export function updateInputAttributes(id: string, newAttributes: object) {
 
 // + - Options
 export function addOption(inputId: string, option: string) {
+	console.log(inputId, option);
 	inputsStore.update((inputs: Field[]) =>
 		inputs.map((input: Field) =>
 			input.id === inputId

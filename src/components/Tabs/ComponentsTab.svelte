@@ -138,7 +138,7 @@
 			<InputChip bind:value={list} name="chips" placeholder="Enter any value..." disabled />
 		</div>
 		<div class="pt-4">
-			<AddButton onAddClick={() => addInput('list', {})} />
+			<AddButton onAddClick={() => addInput('list', { options: [] })} />
 		</div>
 	</div>
 </div>

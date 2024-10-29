@@ -1,3 +1,4 @@
+import { getInputs } from '../store/store';
 import type { Field } from './types';
 
 export function createGetValue(input: Field) {
@@ -36,8 +37,8 @@ export function createGetValue(input: Field) {
 		}
 
 		if (input.component === 'list') {
-			console.log(input.attributes);
-			const list = input.attributes.options?.join(', ') || '';
+			const attributes = getInputs().find((i) => i.id === input.id)?.attributes;
+			const list = attributes?.options?.join(', ') || '';
 			return `${list}`;
 		}
 

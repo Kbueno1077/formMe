@@ -13,6 +13,7 @@
 	import Loader from '../../components/Loader/Loader.svelte';
 	import TabTitle from '../../components/TabTilte/TabTitle.svelte';
 	import {
+		checkValues,
 		extractValues,
 		importDataFirestore,
 		importDataValuesFirestore,
@@ -33,7 +34,6 @@
 		try {
 			loading = true;
 
-			console.log(formId);
 			const formRef = doc(db, 'forms', formId);
 			const formSnap = await getDoc(formRef);
 

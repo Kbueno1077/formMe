@@ -40,10 +40,6 @@
 		}
 	});
 
-	$effect(() => {
-		console.log(options);
-	});
-
 	const handleAddOption = () => {
 		if (currentValue && !options?.includes(currentValue) && currentValue.trim() !== '') {
 			addOption(id, currentValue);

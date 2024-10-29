@@ -108,7 +108,7 @@
 
 			{#each inputs as input (input.id)}
 				{@const SvelteComponent = getPopUpComponent(input.id, input.component)}
-				<SvelteComponent id={input.id} />
+				<SvelteComponent id={input.id} isSubmitted={false} />
 			{/each}
 		</div>
 	{:else}
@@ -120,7 +120,7 @@
 	{/if}
 
 	<div class="flex justify-end space-x-4">
-		<button class="variant-filled-primary btn" onclick={checkValues}> Check Values </button>
+		<!-- <button class="variant-filled-primary btn" onclick={checkValues}> Check Values </button> -->
 		<button class="variant-filled-primary btn" onclick={exportDataJSON}> Export to JSON </button>
 		<button class="variant-filled-primary btn" onclick={createForm} disabled={creating}>
 			{#if creating}
