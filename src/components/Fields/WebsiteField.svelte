@@ -54,7 +54,9 @@
 		</label>
 	{/if}
 
-	<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+	<div
+		class="input-group input-group-divider max-w-[250px] grid-cols-[auto_1fr_auto] sm:max-w-full"
+	>
 		<div class="input-group-shim">{attributes?.prefix ?? ''}</div>
 		<input
 			{...attributes}
