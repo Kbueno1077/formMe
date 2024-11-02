@@ -9,10 +9,14 @@ export const createdUrlsInSession: Writable<SavedUrl[]> = writable([]);
 export const inputsStore: Writable<Field[]> = writable([]);
 export const inputsValueStore: Writable<InputValueType[]> = writable([]);
 export const formTitle: Writable<string> = writable('');
+export const emailStore = writable('');
+export const isCheckedEmailStore = writable(false);
 
 // DB
 export async function storeInDB() {
 	const title = get(formTitle);
+	const emailValue = get(emailStore);
+	const isCheckedEmailValue = get(isCheckedEmailStore);
 
 	if (!title) {
 		return 'Title Error';
@@ -26,7 +30,8 @@ export async function storeInDB() {
 		const formData = {
 			title: title,
 			inputs: inputsWithoutGetValue,
-			createdAt: serverTimestamp()
+			createdAt: serverTimestamp(),
+			email: isCheckedEmailValue ? emailValue : null
 		};
 
 		const docRef = await addDoc(collection(db, 'forms'), formData);
@@ -128,7 +133,6 @@ export function updateInputAttributes(id: string, newAttributes: object) {
 
 // + - Options
 export function addOption(inputId: string, option: string) {
-	console.log(inputId, option);
 	inputsStore.update((inputs: Field[]) =>
 		inputs.map((input: Field) =>
 			input.id === inputId

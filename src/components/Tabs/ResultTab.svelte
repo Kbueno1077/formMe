@@ -19,6 +19,7 @@
 	import TextAreaField from '../Fields/TextAreaField.svelte';
 	import WebsiteField from '../Fields/WebsiteField.svelte';
 	import TabTitle from '../TabTilte/TabTitle.svelte';
+	import EmailAsk from '../EmailAsk/EmailAsk.svelte';
 
 	let inputs: Field[] = $state([]);
 	let title: string = $state('');
@@ -92,6 +93,8 @@
 			one, share with the desired person, note that you must create 1 url for person
 		</p>
 	</div>
+
+	<EmailAsk />
 
 	{#if createdUrlSession.length > 0}
 		<h2 class="text-2xl font-bold">Created URLs in this session:</h2>

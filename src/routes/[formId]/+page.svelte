@@ -29,6 +29,7 @@
 	let loading = $state(true);
 	let title = $state('');
 	let isSubmitted = $state(false);
+	let email = $state('');
 
 	async function fetchFormData() {
 		try {
@@ -41,6 +42,7 @@
 				title = formSnap.get('title');
 				importDataFirestore(formSnap.get('inputs'));
 				isSubmitted = formSnap.get('submitted') ?? false;
+				email = formSnap.get('email') ?? null;
 
 				if (isSubmitted) {
 					importDataValuesFirestore(formSnap.get('inputValues'));
@@ -62,11 +64,32 @@
 			const formRef = doc(db, 'forms', formId);
 			await updateDoc(formRef, { submitted: true, inputValues });
 
-			toastStore.trigger(toastConfig('Your Form has been submited', 'success'));
+			toastStore.trigger(toastConfig('Your Form has been submitted', 'success'));
+
+			try {
+				const response = await fetch('/api/send-email', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ to: email, formUrl: `${window.location.href}${formId}` })
+				});
+
+				if (!response.ok) {
+					const result = await response.json();
+					throw new Error(result.error || 'Failed to send email');
+				}
+
+				toastStore.trigger(toastConfig('Email sent successfully', 'success'));
+			} catch (err: any) {
+				console.error('Error sending email:', err);
+				toastStore.trigger(toastConfig(`Error sending email: ${err.message}`, 'error'));
+			}
+
 			goto(`/`);
-		} catch (err) {
+		} catch (err: any) {
 			console.error('Error updating form:', err);
-			toastStore.trigger(toastConfig('Error updating form data', 'error'));
+			toastStore.trigger(toastConfig(`Error updating form data: ${err.message}`, 'error'));
 		}
 	}
 
