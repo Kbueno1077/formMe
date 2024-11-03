@@ -2,6 +2,7 @@
 	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { importDataJson } from '../../store/store';
 	import basicTemplate1 from '../../utils/templates/BaiscForm1.json';
+	import basicTemplate2 from '../../utils/templates/BasicForm2.json';
 	import { toastConfig } from '../../utils/validation';
 	import type { Field } from '../../utils/types';
 
@@ -45,6 +46,18 @@
 			<div class="flex flex-col items-start justify-start">
 				<h3 class="text-2xl font-bold">{basicTemplate1.name}</h3>
 				<p class="mt-2 text-start">{basicTemplate1.description}</p>
+			</div>
+		</button>
+		<button
+			class="card card-hover block w-full max-w-[500px] p-4"
+			onclick={() => {
+				selectedTemplate = basicTemplate2.data;
+				triggerConfirm();
+			}}
+		>
+			<div class="flex flex-col items-start justify-start">
+				<h3 class="text-2xl font-bold">{basicTemplate2.name}</h3>
+				<p class="mt-2 text-start">{basicTemplate2.description}</p>
 			</div>
 		</button>
 	</div>

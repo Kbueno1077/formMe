@@ -1,0 +1,166 @@
+{
+	"name": "Hotel Reservation Form",
+	"description": "A comprehensive hotel booking form with guest details, room preferences, and special requests",
+	"data": [
+		{
+			"id": "checkIn",
+			"component": "input",
+			"attributes": {
+				"type": "date",
+				"withLabel": true,
+				"label": "Check-in Date",
+				"withErrorMessage": true,
+				"errorMessage": "Check-in date is required",
+				"required": true
+			},
+			"index": 0
+		},
+		{
+			"id": "checkOut",
+			"component": "input",
+			"attributes": {
+				"type": "date",
+				"withLabel": true,
+				"label": "Check-out Date",
+				"withErrorMessage": true,
+				"errorMessage": "Check-out date is required",
+				"required": true
+			},
+			"index": 1
+		},
+		{
+			"id": "guestName",
+			"component": "input",
+			"attributes": {
+				"type": "text",
+				"withPlaceholder": true,
+				"placeholder": "Full Name",
+				"withLabel": true,
+				"label": "Guest Name",
+				"withErrorMessage": true,
+				"errorMessage": "Guest name is required",
+				"required": true
+			},
+			"index": 2
+		},
+		{
+			"id": "email",
+			"component": "input",
+			"attributes": {
+				"type": "email",
+				"withPlaceholder": true,
+				"placeholder": "Email Address",
+				"withLabel": true,
+				"label": "Email Address",
+				"withErrorMessage": true,
+				"errorMessage": "Valid email is required",
+				"required": true
+			},
+			"index": 3
+		},
+		{
+			"id": "phone",
+			"component": "input",
+			"attributes": {
+				"type": "tel",
+				"withPlaceholder": true,
+				"placeholder": "Phone Number",
+				"withLabel": true,
+				"label": "Phone Number",
+				"withErrorMessage": true,
+				"errorMessage": "Phone number is required",
+				"required": true
+			},
+			"index": 4
+		},
+		{
+			"id": "numberOfGuests",
+			"component": "select",
+			"attributes": {
+				"options": ["1", "2", "3", "4", "5", "6+"],
+				"withLabel": true,
+				"label": "Number of Guests",
+				"required": true,
+				"withErrorMessage": true,
+				"errorMessage": "Number of guests is required"
+			},
+			"index": 5
+		},
+		{
+			"id": "roomType",
+			"component": "radio",
+			"attributes": {
+				"withLabel": true,
+				"label": "Room Type",
+				"options": ["Standard Room", "Deluxe Room", "Suite", "Family Room"],
+				"required": true,
+				"withErrorMessage": true,
+				"errorMessage": "Room type is required"
+			},
+			"index": 6
+		},
+		{
+			"id": "bedPreference",
+			"component": "radio",
+			"attributes": {
+				"withLabel": true,
+				"label": "Bed Preference",
+				"options": ["Single Bed", "Double Bed", "Twin Beds", "King Size"],
+				"required": true,
+				"withErrorMessage": true,
+				"errorMessage": "Bed preference is required"
+			},
+			"index": 7
+		},
+		{
+			"id": "amenities",
+			"component": "checkbox",
+			"attributes": {
+				"options": [
+					"WiFi",
+					"Breakfast",
+					"Airport Shuttle",
+					"Parking",
+					"Swimming Pool Access",
+					"Gym Access"
+				],
+				"withLabel": true,
+				"label": "Additional Amenities"
+			},
+			"index": 8
+		},
+		{
+			"id": "specialRequests",
+			"component": "list",
+			"attributes": {
+				"withPlaceholder": true,
+				"placeholder": "Add special request",
+				"withLabel": true,
+				"label": "Special Requests"
+			},
+			"index": 9
+		},
+		{
+			"id": "dietaryRestrictions",
+			"component": "checkbox",
+			"attributes": {
+				"options": ["Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free", "Halal", "Kosher"],
+				"withLabel": true,
+				"label": "Dietary Restrictions"
+			},
+			"index": 10
+		},
+		{
+			"id": "additionalNotes",
+			"component": "textarea",
+			"attributes": {
+				"withPlaceholder": true,
+				"rows": "4",
+				"placeholder": "Any additional information we should know about your stay?",
+				"withLabel": true,
+				"label": "Additional Notes"
+			},
+			"index": 11
+		}
+	]
+}

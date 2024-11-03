@@ -66,24 +66,26 @@
 
 			toastStore.trigger(toastConfig('Your Form has been submitted', 'success'));
 
-			try {
-				const response = await fetch('/api/send-email', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ to: email, formUrl: `${window.location.href}${formId}` })
-				});
+			if (email) {
+				try {
+					const response = await fetch('/api/send-email', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({ to: email, formUrl: `${window.location.href}${formId}` })
+					});
 
-				if (!response.ok) {
-					const result = await response.json();
-					throw new Error(result.error || 'Failed to send email');
+					if (!response.ok) {
+						const result = await response.json();
+						throw new Error(result.error || 'Failed to send email');
+					}
+
+					toastStore.trigger(toastConfig('Email sent successfully', 'success'));
+				} catch (err: any) {
+					console.error('Error sending email:', err);
+					toastStore.trigger(toastConfig(`Error sending email: ${err.message}`, 'error'));
 				}
-
-				toastStore.trigger(toastConfig('Email sent successfully', 'success'));
-			} catch (err: any) {
-				console.error('Error sending email:', err);
-				toastStore.trigger(toastConfig(`Error sending email: ${err.message}`, 'error'));
 			}
 
 			goto(`/`);
