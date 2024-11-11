@@ -9,7 +9,7 @@
 	const modalStore = getModalStore();
 
 	const confirmModal = {
-		type: 'confirm' as 'confirm',
+		type: 'confirm' as const,
 		title: 'Confirmation',
 		body: 'Are you sure you want to proceed, This will remove all progress you have on current work?',
 		buttonTextConfirm: 'Yes, proceed',

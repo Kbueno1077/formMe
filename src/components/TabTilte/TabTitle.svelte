@@ -6,7 +6,10 @@
 		description?: string;
 	}
 
-	let { title = 'Components', description = 'Explore our collection of meticulously crafted UI elements' }: Props = $props();
+	let {
+		title = 'Components',
+		description = 'Explore our collection of meticulously crafted UI elements'
+	}: Props = $props();
 </script>
 
 <div
